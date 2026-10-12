@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Intelligence | Food Delivery NLP</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">✦</div><div><strong>ReviewIQ</strong><small>FOOD DELIVERY NLP</small></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <a class="nav-item active" href="#overview">▦ <span>Overview</span></a>
+    <a class="nav-item" href="#add-review">＋ <span>Add a review</span></a>
+    <a class="nav-item" href="#review-list">☷ <span>Review history</span></a>
+    <div class="sidebar-bottom"><div class="status-dot"></div><span>Local NLP engine</span><span class="online">ONLINE</span></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><div class="eyebrow">CUSTOMER EXPERIENCE / ANALYTICS</div><h1>Review Intelligence</h1><p class="subhead">Understand customer sentiment and uncover what needs attention.</p></div>
+      <div class="top-right"><span class="live-pill"><i></i> System active</span><div class="avatar">RI</div></div>
+    </header>
+
+    <section id="overview" class="stats-grid">
+      <article class="stat-card"><div class="stat-top"><span>Total reviews</span><span class="stat-icon purple">▤</span></div><div class="stat-value" id="totalReviews">0</div><div class="stat-note">Reviews saved this session</div></article>
+      <article class="stat-card"><div class="stat-top"><span>Positive sentiment</span><span class="stat-icon green">↗</span></div><div class="stat-value" id="positiveCount">0</div><div class="stat-note">Classified as positive</div></article>
+      <article class="stat-card"><div class="stat-top"><span>Negative sentiment</span><span class="stat-icon orange">!</span></div><div class="stat-value" id="negativeCount">0</div><div class="stat-note">May need follow-up</div></article>
+      <article class="stat-card"><div class="stat-top"><span>Top issue category</span><span class="stat-icon blue">⌁</span></div><div class="stat-value category-value" id="topCategory">—</div><div class="stat-note">Most reported category</div></article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel form-panel" id="add-review">
+        <div class="panel-heading"><div><span class="section-tag">NLP WORKSPACE</span><h2>Review classifier</h2><p>Enter a customer review to predict sentiment and issue type.</p></div><span class="spark">✧</span></div>
+        <label for="reviewText">CUSTOMER REVIEW</label>
+        <textarea id="reviewText" maxlength="1200" placeholder="Example: My food arrived cold and the delivery was late..."></textarea>
+        <div class="input-meta"><span>Use a full sentence for better context</span><span id="charCount">0 / 1200</span></div>
+        <div class="button-row"><button class="btn btn-primary" id="classifyBtn">✧ Classify review</button><button class="btn btn-secondary" id="saveBtn">＋ Classify & save</button></div>
+        <div id="message" class="message hidden" role="status"></div>
+        <div id="resultCard" class="result-card hidden">
+          <div class="result-header"><strong>Prediction result</strong><span class="result-check">✓</span></div>
+          <div class="result-badges"><span id="sentimentBadge" class="badge">Positive</span><span id="categoryBadge" class="badge category-badge">Delivery</span></div>
+          <div class="processed"><span>PREPROCESSED TEXT</span><p id="processedText"></p></div>
+        </div>
+      </article>
+
+      <article class="panel summary-panel">
+        <div class="panel-heading"><div><span class="section-tag">LIVE SUMMARY</span><h2>Issue breakdown</h2><p>Distribution of saved review categories.</p></div><span class="summary-icon">◔</span></div>
+        <div id="categoryBreakdown" class="breakdown"></div>
+        <div class="divider"></div>
+        <div class="top-words-heading"><div><h3>Top content words</h3><p>Most frequent processed terms</p></div><span class="word-icon">Aa</span></div>
+        <div id="topWords" class="word-cloud"><span class="empty-state">Add reviews to see frequent words.</span></div>
+      </article>
+    </section>
+
+    <section class="panel history-panel" id="review-list">
+      <div class="panel-heading history-heading"><div><span class="section-tag">REVIEW ACTIVITY</span><h2>Recent reviews</h2><p>Classifications saved during this session.</p></div><button class="btn btn-secondary btn-small" id="refreshBtn">↻ Refresh</button></div>
+      <div class="table-wrap"><table><thead><tr><th>REVIEW</th><th>SENTIMENT</th><th>ISSUE CATEGORY</th><th>PROCESSED TEXT</th></tr></thead><tbody id="reviewRows"><tr><td colspan="4" class="empty-table">No reviews yet. Add one above to get started.</td></tr></tbody></table></div>
+    </section>
+    <footer>ReviewIQ · Educational NLP project <span>TF-IDF + Logistic Regression · Flask API</span></footer>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
