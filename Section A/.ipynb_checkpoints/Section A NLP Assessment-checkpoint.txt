@@ -1,0 +1,92 @@
+DATA SCIENCE — MODULE 11: NATURAL LANGUAGE PROCESSING (NLP)
+M11-A1 — SECTION A: CONCEPT APPLICATION
+============================================================
+
+S1. NLP TECHNIQUES FOR A CUSTOMER SUPPORT CHATBOT
+
+Two important NLP techniques are intent classification and entity recognition.
+
+1. Intent classification:
+Intent classification identifies what the customer wants to do, such as checking an order, cancelling an order, or reporting a food-quality problem. It helps the chatbot route each message to the correct process. Without it, the chatbot may misunderstand the customer's request and send them to the wrong service, reducing response accuracy.
+
+2. Named Entity Recognition (NER) / entity extraction:
+Entity extraction identifies important details in a message, such as an order number, food item, delivery time, or location. These details help the chatbot answer the query or take the correct action. Without entity extraction, the chatbot may recognise the general intent but lack the information needed to handle the request correctly.
+
+If either technique is removed, the chatbot is more likely to misroute messages or provide incomplete and incorrect responses.
+
+
+S2. TEXT PREPROCESSING PIPELINE FOR 50,000 CUSTOMER REVIEWS
+
+I would use the following preprocessing pipeline:
+
+1. Inspect and clean the data:
+   Check for missing reviews, duplicates, and invalid records. This prevents empty or repeated data from unnecessarily affecting the model.
+
+2. Normalise letter case:
+   Convert text to lowercase so that words such as "Food" and "food" are treated consistently.
+
+3. Handle URLs, HTML, and special characters:
+   Remove or standardise unwanted markup and URLs where they do not provide useful information. Handle punctuation, numbers, and emojis according to the task. Emojis can express sentiment, so they should not automatically be deleted if sentiment analysis is required.
+
+4. Tokenisation:
+   Split each review into words or tokens. Tokenisation is needed before word-level operations such as stopword removal and stemming.
+
+5. Stopword removal:
+   Remove frequent words such as "the", "is", and "a" when they do not add useful meaning to the task. This can reduce noise and the size of the feature set. However, negation words such as "not" should be retained because they can reverse meaning.
+
+6. Stemming or lemmatisation:
+   Reduce related word forms to a common form, if appropriate. For example, stemming may reduce "delivered" and "delivering" to a similar root. Lemmatisation can produce more linguistically meaningful base forms.
+
+7. Convert the cleaned text into numerical features:
+   Use a method such as TF-IDF or embeddings, depending on the model, because most NLP models require numerical input.
+
+8. Split the dataset:
+   Divide the data into training and test sets. Fit any vocabulary or feature transformation on training data only, then apply it to the test data to avoid data leakage.
+
+The order matters because basic cleaning and normalisation make tokenisation more consistent. Tokenisation must happen before token-level filtering and stemming. Numerical feature extraction is performed after preprocessing.
+
+If stopword removal is skipped, very common words may add many low-information features and increase the feature space. This can make some models slower and may distract simpler models from more informative terms. However, stopword removal is not always beneficial; the decision depends on the task, and important words such as "not" must be preserved.
+
+
+S3. BAG OF WORDS VS TF-IDF FOR MENU SEARCH
+
+Bag of Words (BoW):
+BoW represents a document by counting how often each word appears. It is simple and easy to implement, but common words can receive high values even when they are not useful for distinguishing one menu item from another.
+
+TF-IDF:
+TF-IDF stands for Term Frequency–Inverse Document Frequency. It gives more weight to words that are important in a particular description but less common across all descriptions. This helps distinguish specific terms such as "spicy", "chicken", or "onion" from very common words.
+
+I would choose TF-IDF for ranking menu descriptions because it reduces the influence of common terms and gives more importance to distinctive query words. The menu descriptions can be converted to TF-IDF vectors, and their similarity to the query can be calculated, for example, using cosine similarity.
+
+One limitation is that TF-IDF does not understand meaning or context. It may not recognise that "chilli chicken" and "spicy chicken" are related, and it may struggle with synonyms or different word orders. A query such as "without onion" also requires special handling because a basic TF-IDF similarity score may not reliably interpret the negation.
+
+
+S4. NAIVE BAYES ASSUMPTION AND ITS LIMITATION
+
+Naive Bayes assumes that input features are conditionally independent of one another when the class label is known. In other words, once the ticket category is given, the model treats the presence of one word as independent of the presence of another word.
+
+A realistic example is the ticket "My food arrived cold and late." The words "cold" and "late" may occur together because both describe a poor delivery experience. They are related in this context, but Naive Bayes treats their occurrence as conditionally independent given the category.
+
+This assumption is often not fully true in real language. As a result, the model may estimate class probabilities poorly or overemphasise combinations of related words. It may confuse a Delivery Issue with a Food Quality Issue, lowering classification accuracy. Naive Bayes can still work well in practice despite this simplifying assumption, especially with suitable training data.
+
+
+S5. EVALUATION METRICS AND CLASS IMBALANCE
+
+Two metrics I would prioritise over accuracy are:
+
+1. Macro F1-score:
+   F1-score combines precision and recall. Macro F1 calculates the F1-score for each class and then gives every class equal weight. This is useful because the Negative class has only 5% of the reviews and should not be ignored just because Positive reviews are common.
+
+2. Per-class recall:
+   Recall measures the proportion of actual examples of a class that the model correctly identifies. I would check recall for Neutral and Negative reviews in particular, because a model could achieve high overall accuracy by predicting Positive too often while missing minority-class reviews.
+
+One technique to address class imbalance is class weighting. During training, assign greater weights to Neutral and Negative examples so that mistakes on these minority classes have a larger impact on the learning process. Other options include oversampling minority classes or undersampling the majority class. The final models should be compared using the same stratified train-test split.
+
+
+S6. TRANSFORMER ATTENTION AND PRODUCTION CHALLENGES
+
+The attention mechanism allows a transformer to compare tokens with other relevant tokens in a sequence and assign different weights to them. This helps the model use context from distant parts of a text and process token relationships in parallel during training. Traditional RNNs process tokens sequentially, which can make training slower and make it harder to preserve information across long sequences.
+
+One practical challenge in production is high computational cost and latency when hundreds of requests arrive each minute. Large transformer models can require substantial GPU memory and processing time.
+
+A common mitigation is to use a smaller or distilled model, batch incoming requests where appropriate, and serve the model on suitable hardware. Caching repeated results and scaling the number of model-serving workers can also help, while monitoring latency and response quality.
